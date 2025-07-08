@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../apps/backend:/app/apps/backend
+      - ../../package.json:/app/package.json
+      - ../../tsconfig.json:/app/tsconfig.json
+    environment:
+      - NODE_ENV=development
+    working_dir: /app/apps/backend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../apps/frontend:/app/apps/frontend
+      - ../../package.json:/app/package.json
+    environment:
+      - NODE_ENV=development
+    working_dir: /app/apps/frontend
