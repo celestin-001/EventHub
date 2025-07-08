@@ -3,16 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { ModulesContainer } from '@nestjs/core';
+import { AppResolver } from './app.resolver';
 
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true, // ou 'schema.gql'
+      autoSchemaFile: true, // génère automatiquement le schéma
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, ModulesContainer],
+  providers: [AppService, AppResolver],
 })
 export class AppModule {}
