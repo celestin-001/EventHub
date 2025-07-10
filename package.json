@@ -3,6 +3,10 @@
     "@apollo/server": "^4.12.2",
     "@nestjs/apollo": "^12.2.2",
     "@nestjs/graphql": "^12.2.2",
+    "@prisma/client": "^6.11.1",
     "graphql": "^16.11.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.11.1"
   }
 }
