@@ -1,24 +1,28 @@
-version: "3.9"
+
 
 services:
   backend:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ../../
+      dockerfile: docker/dev/Dockerfile.backend
     ports:
       - "3000:3000"
     volumes:
       - ../../apps/backend:/app/apps/backend
       - ../../package.json:/app/package.json
       - ../../tsconfig.json:/app/tsconfig.json
+      - ../../prisma:/app/prisma 
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:admin@eventhub-db:5432/eventhub
     working_dir: /app/apps/backend
+    depends_on:
+      - postgres
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile.frontend
+      context: ../../
+      dockerfile: docker/dev/Dockerfile.frontend
     ports:
       - "5173:5173"
     volumes:
@@ -27,3 +31,33 @@ services:
     environment:
       - NODE_ENV=development
     working_dir: /app/apps/frontend
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:15
+    container_name: eventhub-db
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: eventhub
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: eventhub-pgadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: goumoucelestin3@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: MonMotDePasseSecurise123!
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

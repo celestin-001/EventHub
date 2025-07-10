@@ -2,10 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY ../../package*.json ./
-COPY ../../apps/backend/package*.json ./apps/backend/
-COPY ../../tsconfig*.json ./
-COPY ../../apps/backend ./apps/backend
+COPY package*.json ./
+COPY apps/backend/package*.json ./apps/backend/
+COPY tsconfig*.json ./
+COPY apps/backend ./apps/backend
 
 RUN npm install
 WORKDIR /app/apps/backend
