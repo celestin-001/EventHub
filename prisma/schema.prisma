@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String?
+  password      String?         // utilisé si pas de SSO
+  role          Role            @default(PARTICIPANT)
+  eventsCreated Event[]         @relation("CreatedEvents")
+  eventsJoined  Event[]         @relation("EventParticipants")
+  comments      Comment[]
+  notifications Notification[]
+  createdAt     DateTime        @default(now())
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  description  String?
+  location     String?
+  date         DateTime
+  capacity     Int?
+  imageUrl     String?
+  creator      User     @relation("CreatedEvents", fields: [creatorId], references: [id])
+  creatorId    String
+  participants User[]   @relation("EventParticipants")
+  comments     Comment[]
+  createdAt    DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  message   String
+  read      Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  ORGANIZER
+  PARTICIPANT
+}
